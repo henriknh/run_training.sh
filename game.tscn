@@ -1,0 +1,139 @@
+[gd_scene load_steps=4 format=3 uid="uid://diw623o6tlwgk"]
+
+[ext_resource type="Script" path="res://game.gd" id="1_j5kia"]
+[ext_resource type="PackedScene" uid="uid://s5q25xmlpgkb" path="res://map.tscn" id="3_0fexu"]
+[ext_resource type="PackedScene" uid="uid://bxsa6d7e1kotn" path="res://player.tscn" id="3_uj0p5"]
+
+[node name="Game" type="Node2D" node_paths=PackedStringArray("spawn_root")]
+script = ExtResource("1_j5kia")
+spawn_root = NodePath("SpawnRoot")
+player_scene = ExtResource("3_uj0p5")
+map_scene = ExtResource("3_0fexu")
+
+[node name="SpawnRoot" type="Node2D" parent="."]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://player.tscn", "res://map.tscn")
+spawn_path = NodePath("../SpawnRoot")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Loading" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/Loading"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.133333, 0.12549, 0.203922, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Loading"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Loading/MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Loading/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Prompt1" type="Label" parent="CanvasLayer/Loading/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "claire@workspace ~"
+
+[node name="Prompt2" type="Label" parent="CanvasLayer/Loading/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "ssh root@127.0.0.1"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Loading/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Prompt3" type="Label" parent="CanvasLayer/Loading/MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Connecting..."
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="CanvasLayer/Loading/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Prompt4" type="Label" parent="CanvasLayer/Loading/MarginContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "root@terminal ~"
+
+[node name="Prompt5" type="Label" parent="CanvasLayer/Loading/MarginContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "./training.sh"
+
+[node name="ConnectionLost" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/ConnectionLost"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.133333, 0.12549, 0.203922, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/ConnectionLost"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/ConnectionLost/CenterContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Label" type="Label" parent="CanvasLayer/ConnectionLost/CenterContainer/MarginContainer"]
+layout_mode = 2
+text = "Connection lost to server
+Try to connect again, or in a few minutes :)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RunTime" type="MarginContainer" parent="CanvasLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Label" type="Label" parent="CanvasLayer/RunTime"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "00:00"
+
+[node name="NextLetterTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[connection signal="timeout" from="NextLetterTimer" to="." method="_next_letter"]

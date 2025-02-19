@@ -1,0 +1,7 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://bqdojeys11wu8"]
+
+[ext_resource type="FontFile" uid="uid://r44me8yne6ja" path="res://DepartureMono-1.422/DepartureMono-Regular.woff2" id="1_5u5fl"]
+
+[resource]
+default_font = ExtResource("1_5u5fl")
+default_font_size = 32

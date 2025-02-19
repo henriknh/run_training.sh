@@ -1,0 +1,135 @@
+[gd_scene load_steps=16 format=3 uid="uid://bxsa6d7e1kotn"]
+
+[ext_resource type="Script" path="res://player.gd" id="1_g4kle"]
+[ext_resource type="Texture2D" uid="uid://cgb3n3n3u6qsj" path="res://character.png" id="3_ytxpy"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_mo738"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath("AnimatedSprite2D:flip_h")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath("AnimatedSprite2D:animation")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+properties/3/path = NodePath("AnimatedSprite2D:frame")
+properties/3/spawn = true
+properties/3/replication_mode = 2
+properties/4/path = NodePath("GPUParticles2D:emitting")
+properties/4/spawn = true
+properties/4/replication_mode = 2
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hsbc3"]
+radius = 5.0
+height = 18.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nmqnh"]
+atlas = ExtResource("3_ytxpy")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_57twq"]
+atlas = ExtResource("3_ytxpy")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_646sx"]
+atlas = ExtResource("3_ytxpy")
+region = Rect2(0, 24, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v08t3"]
+atlas = ExtResource("3_ytxpy")
+region = Rect2(24, 24, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0fqrx"]
+atlas = ExtResource("3_ytxpy")
+region = Rect2(0, 48, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tkcv6"]
+atlas = ExtResource("3_ytxpy")
+region = Rect2(24, 48, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_lrwvw"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nmqnh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_57twq")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_646sx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v08t3")
+}],
+"loop": true,
+"name": &"jump",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0fqrx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tkcv6")
+}],
+"loop": true,
+"name": &"slide",
+"speed": 4.0
+}]
+
+[sub_resource type="Curve" id="Curve_mp4gg"]
+_data = [Vector2(0, 1), 0.0, -1.0, 0, 1, Vector2(1, 0), -1.0, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_ok11w"]
+curve = SubResource("Curve_mp4gg")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_sre4h"]
+lifetime_randomness = 0.2
+particle_flag_disable_z = true
+emission_shape_offset = Vector3(0, -1, 0)
+emission_shape = 3
+emission_box_extents = Vector3(2, 0, 0)
+direction = Vector3(-1, -0.6, 0)
+spread = 30.0
+initial_velocity_min = 40.0
+initial_velocity_max = 60.0
+gravity = Vector3(0, 98, 0)
+scale_min = 4.0
+scale_max = 6.0
+alpha_curve = SubResource("CurveTexture_ok11w")
+turbulence_influence_max = 0.129
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mf48g"]
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+script = ExtResource("1_g4kle")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_mo738")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -9)
+shape = SubResource("CapsuleShape2D_hsbc3")
+
+[node name="Camera" type="Camera2D" parent="."]
+zoom = Vector2(3, 3)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -12)
+sprite_frames = SubResource("SpriteFrames_lrwvw")
+animation = &"idle"
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+process_material = SubResource("ParticleProcessMaterial_sre4h")
+texture = SubResource("AtlasTexture_mf48g")
+lifetime = 0.3
+trail_lifetime = 8.71

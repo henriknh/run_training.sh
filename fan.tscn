@@ -1,0 +1,84 @@
+[gd_scene load_steps=7 format=3 uid="uid://d1xlpsaxhipac"]
+
+[ext_resource type="Script" path="res://fan.gd" id="1_r6ddy"]
+[ext_resource type="Texture2D" uid="uid://b2m2ekdu7hmst" path="res://fan.png" id="1_sjoap"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kmwn3"]
+atlas = ExtResource("1_sjoap")
+region = Rect2(0, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4c53r"]
+atlas = ExtResource("1_sjoap")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i4olq"]
+atlas = ExtResource("1_sjoap")
+region = Rect2(0, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vhveq"]
+atlas = ExtResource("1_sjoap")
+region = Rect2(512, 512, 1, 1)
+
+[node name="Fan" type="Node2D"]
+scale = Vector2(4, 4)
+script = ExtResource("1_r6ddy")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = -2048.0
+offset_top = -2048.0
+offset_right = 2048.0
+offset_bottom = 2048.0
+color = Color(0.270588, 0.156863, 0.235294, 1)
+
+[node name="Background" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_kmwn3")
+
+[node name="Blades" type="Node2D" parent="."]
+
+[node name="Center" type="Sprite2D" parent="Blades"]
+texture = SubResource("AtlasTexture_4c53r")
+
+[node name="Blade" type="Sprite2D" parent="Blades"]
+texture = SubResource("AtlasTexture_i4olq")
+
+[node name="Blade2" type="Sprite2D" parent="Blades"]
+rotation = 1.0472
+texture = SubResource("AtlasTexture_i4olq")
+
+[node name="Blade3" type="Sprite2D" parent="Blades"]
+rotation = 2.0944
+texture = SubResource("AtlasTexture_i4olq")
+
+[node name="Blade4" type="Sprite2D" parent="Blades"]
+rotation = 3.14159
+texture = SubResource("AtlasTexture_i4olq")
+
+[node name="Blade5" type="Sprite2D" parent="Blades"]
+rotation = 4.18879
+texture = SubResource("AtlasTexture_i4olq")
+
+[node name="Blade6" type="Sprite2D" parent="Blades"]
+rotation = 5.23599
+texture = SubResource("AtlasTexture_i4olq")
+
+[node name="Outside" type="Node2D" parent="."]
+
+[node name="Left" type="Sprite2D" parent="Outside"]
+position = Vector2(-768, 0)
+scale = Vector2(1024, 1024)
+texture = SubResource("AtlasTexture_vhveq")
+
+[node name="Up" type="Sprite2D" parent="Outside"]
+position = Vector2(0, -768)
+scale = Vector2(1024, 1024)
+texture = SubResource("AtlasTexture_vhveq")
+
+[node name="Right" type="Sprite2D" parent="Outside"]
+position = Vector2(768, 0)
+scale = Vector2(1024, 1024)
+texture = SubResource("AtlasTexture_vhveq")
+
+[node name="Down" type="Sprite2D" parent="Outside"]
+position = Vector2(0, 768)
+scale = Vector2(1024, 1024)
+texture = SubResource("AtlasTexture_vhveq")
