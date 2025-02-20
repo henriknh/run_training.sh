@@ -23,3 +23,11 @@ func _on_start_zone_body_entered(body: Node2D) -> void:
 func _on_end_zone_body_entered(body: Node2D) -> void:
 	if body is Player:
 		body.is_in_end = true
+
+func _on_anti_gravity_body_entered(body: Node2D) -> void:
+	if body is Player:
+		body.gravity_dir = -1
+
+func _on_anti_gravity_body_exited(body: Node2D) -> void:
+	if body is Player:
+		body.gravity_dir = 1
