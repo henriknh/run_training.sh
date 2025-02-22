@@ -16,18 +16,19 @@ func _ready() -> void:
 	end_zone_color_rect.position = end_zone_collision_shape.position - end_zone_shape.size / 2
 
 func _on_start_zone_body_entered(body: Node2D) -> void:
-	if body is Player:
+	if body is Player and body.is_multiplayer_authority():
+		print('_on_start_zone_body_entered')
 		body.is_in_start = false
 		body.run_time = 0
 
 func _on_end_zone_body_entered(body: Node2D) -> void:
-	if body is Player:
-		body.is_in_end = true
+	if body is Player and body.is_multiplayer_authority():
+		body.run_ending()
 
 func _on_anti_gravity_body_entered(body: Node2D) -> void:
-	if body is Player:
+	if body is Player and body.is_multiplayer_authority():
 		body.gravity_dir = -1
 
 func _on_anti_gravity_body_exited(body: Node2D) -> void:
-	if body is Player:
+	if body is Player and body.is_multiplayer_authority():
 		body.gravity_dir = 1

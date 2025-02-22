@@ -1,8 +1,44 @@
-[gd_scene load_steps=4 format=3 uid="uid://diw623o6tlwgk"]
+[gd_scene load_steps=9 format=3 uid="uid://diw623o6tlwgk"]
 
 [ext_resource type="Script" path="res://game.gd" id="1_j5kia"]
 [ext_resource type="PackedScene" uid="uid://s5q25xmlpgkb" path="res://map.tscn" id="3_0fexu"]
 [ext_resource type="PackedScene" uid="uid://bxsa6d7e1kotn" path="res://player.tscn" id="3_uj0p5"]
+[ext_resource type="AudioStream" uid="uid://bq3kco3mw4otl" path="res://sounds/mixkit-creepy-tomb-ambience-2500.wav" id="4_br1ty"]
+[ext_resource type="AudioStream" uid="uid://dktgc01j4y2vr" path="res://sounds/mixkit-single-key-type-2533.wav" id="5_ltda7"]
+
+[sub_resource type="Animation" id="Animation_qcs5y"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CanvasLayer/Title/CenterContainer:modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_j60gc"]
+resource_name = "TitleFade"
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CanvasLayer/Title/CenterContainer:modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 1)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_huhba"]
+_data = {
+"RESET": SubResource("Animation_qcs5y"),
+"TitleFade": SubResource("Animation_j60gc")
+}
 
 [node name="Game" type="Node2D" node_paths=PackedStringArray("spawn_root")]
 script = ExtResource("1_j5kia")
@@ -12,13 +48,50 @@ map_scene = ExtResource("3_0fexu")
 
 [node name="SpawnRoot" type="Node2D" parent="."]
 
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_huhba")
+}
+
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://player.tscn", "res://map.tscn")
 spawn_path = NodePath("../SpawnRoot")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
+[node name="Title" type="Control" parent="CanvasLayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/Title"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.133333, 0.12549, 0.203922, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/Title"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Title/CenterContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "./run_training.sh"
+
 [node name="Loading" type="Control" parent="CanvasLayer"]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -77,6 +150,7 @@ layout_mode = 2
 text = "./training.sh"
 
 [node name="ConnectionLost" type="Control" parent="CanvasLayer"]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -127,13 +201,147 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="Label" type="Label" parent="CanvasLayer/RunTime"]
+[node name="RunUI" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/RunUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/RunUI/MarginContainer"]
+layout_mode = 2
+
+[node name="Leaderboard" type="VBoxContainer" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/Leaderboard"]
+layout_mode = 2
+theme_override_constants/separation = -4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/Leaderboard/VBoxContainer"]
+layout_mode = 2
+
+[node name="1st" type="Label" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/Leaderboard/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_colors/font_color = Color(1, 0.843137, 0, 1)
+text = "1st"
+
+[node name="Candidate1" type="Label" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/Leaderboard/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "123123123"
+
+[node name="Time1" type="Label" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/Leaderboard/VBoxContainer"]
+layout_mode = 2
+text = "00:00"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/Leaderboard"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/Leaderboard/VBoxContainer2"]
+layout_mode = 2
+
+[node name="2nd" type="Label" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/Leaderboard/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.752941, 0.752941, 0.752941, 1)
+text = "2nd"
+
+[node name="Candidate2" type="Label" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/Leaderboard/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+text = "123123123"
+
+[node name="Time2" type="Label" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/Leaderboard/VBoxContainer2"]
+layout_mode = 2
+text = "00:00"
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/Leaderboard"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/Leaderboard/VBoxContainer3"]
+layout_mode = 2
+
+[node name="3rd" type="Label" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/Leaderboard/VBoxContainer3/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.807843, 0.537255, 0.27451, 1)
+text = "3rd"
+
+[node name="Candidate3" type="Label" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/Leaderboard/VBoxContainer3/HBoxContainer"]
+layout_mode = 2
+text = "123123123"
+
+[node name="Time3" type="Label" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/Leaderboard/VBoxContainer3"]
+layout_mode = 2
+text = "00:00"
+
+[node name="VBoxContainer4" type="VBoxContainer" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/Leaderboard"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="PersonalBest" type="Label" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/Leaderboard/VBoxContainer4"]
+layout_mode = 2
+text = "Personal best"
+
+[node name="Time4" type="Label" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/Leaderboard/VBoxContainer4"]
+layout_mode = 2
+text = "00:00"
+
+[node name="Control" type="Control" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PlayerStats" type="VBoxContainer" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="AIModel" type="Label" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/PlayerStats"]
+visible = false
+layout_mode = 2
+text = "AI model training"
+horizontal_alignment = 2
+
+[node name="Name" type="Label" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/PlayerStats"]
+layout_mode = 2
+text = "Candidate 123123123"
+horizontal_alignment = 2
+
+[node name="Epochs" type="Label" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/PlayerStats"]
+layout_mode = 2
+text = "10 attempts"
+horizontal_alignment = 2
+
+[node name="Time" type="Label" parent="CanvasLayer/RunUI/MarginContainer/HBoxContainer/PlayerStats"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 text = "00:00"
+horizontal_alignment = 2
 
 [node name="NextLetterTimer" type="Timer" parent="."]
 wait_time = 0.1
 one_shot = true
 
+[node name="SoundAmbient" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_br1ty")
+volume_db = -5.0
+
+[node name="SoundKeyPress" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_ltda7")
+volume_db = -10.0
+
 [connection signal="timeout" from="NextLetterTimer" to="." method="_next_letter"]
+[connection signal="finished" from="SoundAmbient" to="SoundAmbient" method="play"]

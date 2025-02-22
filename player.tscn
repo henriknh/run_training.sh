@@ -1,7 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://bxsa6d7e1kotn"]
+[gd_scene load_steps=18 format=3 uid="uid://bxsa6d7e1kotn"]
 
 [ext_resource type="Script" path="res://player.gd" id="1_g4kle"]
+[ext_resource type="AudioStream" uid="uid://de74xkkwjdwow" path="res://sounds/computer_on.mp3" id="3_42gek"]
 [ext_resource type="Texture2D" uid="uid://cgb3n3n3u6qsj" path="res://character.png" id="3_ytxpy"]
+[ext_resource type="AudioStream" uid="uid://b3ij65e3ssppu" path="res://sounds/computer_off.mp3" id="4_4n2bh"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hsbc3"]
 radius = 5.0
@@ -35,21 +37,21 @@ region = Rect2(0, 0, 24, 24)
 atlas = ExtResource("3_ytxpy")
 region = Rect2(24, 0, 24, 24)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_646sx"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_ypvlw"]
 atlas = ExtResource("3_ytxpy")
-region = Rect2(0, 24, 24, 24)
+region = Rect2(48, 0, 24, 24)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_v08t3"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_hwo7k"]
 atlas = ExtResource("3_ytxpy")
-region = Rect2(24, 24, 24, 24)
+region = Rect2(72, 0, 24, 24)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_0fqrx"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_mre8e"]
 atlas = ExtResource("3_ytxpy")
-region = Rect2(0, 48, 24, 24)
+region = Rect2(96, 0, 24, 24)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_tkcv6"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_tf8ac"]
 atlas = ExtResource("3_ytxpy")
-region = Rect2(24, 48, 24, 24)
+region = Rect2(120, 0, 24, 24)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_lrwvw"]
 animations = [{
@@ -66,10 +68,10 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_646sx")
+"texture": SubResource("AtlasTexture_ypvlw")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_v08t3")
+"texture": SubResource("AtlasTexture_hwo7k")
 }],
 "loop": true,
 "name": &"jump",
@@ -77,10 +79,10 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_0fqrx")
+"texture": SubResource("AtlasTexture_mre8e")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_tkcv6")
+"texture": SubResource("AtlasTexture_tf8ac")
 }],
 "loop": true,
 "name": &"slide",
@@ -129,7 +131,7 @@ zoom = Vector2(3, 3)
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -12)
 sprite_frames = SubResource("SpriteFrames_lrwvw")
-animation = &"idle"
+animation = &"slide"
 flip_v = true
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
@@ -137,3 +139,9 @@ process_material = SubResource("ParticleProcessMaterial_sre4h")
 texture = SubResource("AtlasTexture_mf48g")
 lifetime = 0.3
 trail_lifetime = 8.71
+
+[node name="SoundComputerOn" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_42gek")
+
+[node name="SoundComputerOff" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_4n2bh")
