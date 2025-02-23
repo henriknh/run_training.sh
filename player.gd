@@ -37,6 +37,8 @@ var epoch = 0
 var dialogs_tutorial = []
 var dialogs_end = []
 
+var first_wait = true
+
 func _enter_tree() -> void:
 	set_multiplayer_authority(name.to_int())
 	$Camera.enabled = is_multiplayer_authority()
@@ -84,6 +86,8 @@ func reset():
 	animated_sprite.flip_h = is_left
 	animated_sprite.flip_v = gravity_dir == -1
 	collision_shape.position.y = -9 if gravity_dir == 1 else -15
+	gpu_particles.position.y = -24 if gravity_dir == -1 else 0
+	gpu_particles.scale.y = gravity_dir
 	animated_sprite.play('idle')
 	sound_sliding.stop()
 
@@ -101,7 +105,9 @@ func _physics_process(delta: float) -> void:
 			move_and_slide()
 		return
 	
-	if not is_in_start and not is_in_end:
+	if first_wait:
+		pass
+	elif not is_in_start and not is_in_end:
 		run_time += delta
 		game_node.update_player_ui(run_time, true, epoch, has_completed_once, candidate_id)
 	elif has_completed_once:
@@ -113,7 +119,9 @@ func _physics_process(delta: float) -> void:
 	
 	#camera.position.x = lerpf(camera.position.x, smoothstep(-speed, speed, velocity.x) * 128, 5 * delta)
 	
-	if Input.is_action_just_released("Jump"):
+	if first_wait:
+		pass
+	elif Input.is_action_just_released("Jump"):
 		if input_pressed_time > 1:
 			reset()
 		input_pressed_time = 0
@@ -207,6 +215,7 @@ func run_intro():
 	computer1.play("off")
 	sound_computer_off.play()
 	is_in_cinematic = false
+	first_wait = false
 	
 func run_ending():
 	
