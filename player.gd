@@ -27,9 +27,11 @@ var game_node: Node2D
 
 @onready var sound_computer_on = $SoundComputerOn
 @onready var sound_computer_off = $SoundComputerOff
+@onready var sound_sliding = $SoundSliding
+@onready var sound_jump = $SoundJump
+@onready var sound_land = $SoundLand
 
 var dialog_resource = preload("res://Dialog.tscn")
-
 
 var epoch = 0
 var dialogs_tutorial = []
@@ -41,29 +43,29 @@ func _enter_tree() -> void:
 
 func _ready() -> void:
 	game_node = get_tree().root.get_node_or_null('Game')
-	candidate_id = game_node.candidate_id
+	candidate_id = name.to_int()
 	
 	reset()
 	
 	dialogs_tutorial = [
 		"Welcome candidate " + str(candidate_id) +"!",
-		#"Today's training is the obstacle course.",
-		#"Finish in the shortest possible time.",
-		#"Your performance will be recorded.",
-		#"Use [space] to navigate.",
-		#"Restart by long pressing [space].",
+		"Today's training is the obstacle course.",
+		"Finish in the shortest possible time.",
+		"Your performance will be recorded.",
+		"Use [space] to navigate.",
+		"Restart by long pressing [space].",
 		"Good luck and have fun!"
 	]
 
 	dialogs_end = [
-		#"Run " + str(candidate_id) + " succeeded.",
-		#"Time has been recorded.",
+		"Run " + str(candidate_id) + " succeeded.",
+		"Time has been recorded.",
 		"Recycle " + str(candidate_id) + " and rerun."
 	]
 	
 
 	if is_multiplayer_authority():
-		game_node.connect("loading_complete", func():
+		game_node.ui.connect("loading_complete", func():
 			run_intro()
 		)
 
@@ -83,13 +85,11 @@ func reset():
 	animated_sprite.flip_v = gravity_dir == -1
 	collision_shape.position.y = -9 if gravity_dir == 1 else -15
 	animated_sprite.play('idle')
+	sound_sliding.stop()
 
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():
-		visible = not is_in_start
 		return 
-	
-	visible = true
 	
 	_update_visuals()
 	
@@ -122,12 +122,29 @@ func _physics_process(delta: float) -> void:
 		if can_jump:
 			velocity = Vector2(-speed if is_left else speed, jump_velocity * gravity_dir)
 			can_jump = false
+			sound_jump.play()
 	elif Input.is_action_pressed("Jump"):
 			input_pressed_time += delta
 			
 	var velocity_x_before_move = velocity.x
 	
+	if _is_grounded():
+		can_jump = true
+		
+	var is_grounded_before = _is_grounded()
+	
 	move_and_slide()
+	
+	if _is_in_run():
+		if _is_grounded():
+			if not sound_sliding.playing:
+				sound_sliding.play()
+		else:
+			if sound_sliding.playing:
+				sound_sliding.stop()
+		
+		if not is_grounded_before and _is_grounded():
+			sound_land.play()
 	
 	if not is_in_start and not is_in_end:
 		velocity.x = -speed if is_left else speed
@@ -140,10 +157,10 @@ func _physics_process(delta: float) -> void:
 	_update_visuals()
 
 func _update_visuals():
-	var is_grounded = is_on_floor() if gravity_dir == 1 else is_on_ceiling()
+	var is_grounded = _is_grounded()
 	
-	if is_grounded:
-		can_jump = true
+	#if is_grounded:
+		#can_jump = true
 	
 	gpu_particles.emitting = false
 	if not is_grounded:
@@ -157,6 +174,13 @@ func _update_visuals():
 	animated_sprite.flip_h = is_left
 	animated_sprite.flip_v = gravity_dir == -1
 	collision_shape.position.y = -9 if gravity_dir == 1 else -15
+
+func _is_grounded():
+	return is_on_floor() if gravity_dir == 1 else is_on_ceiling()
+
+func _is_in_run():
+	return not is_in_start and not is_in_end
+
 func run_intro():
 	is_in_cinematic = true
 	is_in_start = true
@@ -219,6 +243,7 @@ func run_ending():
 	await get_tree().create_timer(2).timeout
 	
 	reset()
+	game_node.update_player_ui(run_time, true, epoch, has_completed_once, candidate_id)
 	
 	await get_tree().create_timer(2).timeout
 	computer1.play("idle")
@@ -229,7 +254,7 @@ func run_ending():
 	var dialog = dialog_resource.instantiate()
 	dialog.global_position = computer1.position
 	get_tree().root.add_child(dialog)
-	dialog.display_text("Begin!")
+	dialog.display_text("Run " + str(epoch)+ " of 1000000 epochs!")
 	await dialog.finished_displaying
 	await get_tree().create_timer(1).timeout
 	dialog.queue_free()
