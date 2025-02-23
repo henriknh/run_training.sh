@@ -174,6 +174,8 @@ func _update_visuals():
 	animated_sprite.flip_h = is_left
 	animated_sprite.flip_v = gravity_dir == -1
 	collision_shape.position.y = -9 if gravity_dir == 1 else -15
+	gpu_particles.position.y = -24 if gravity_dir == -1 else 0
+	gpu_particles.scale.y = gravity_dir
 
 func _is_grounded():
 	return is_on_floor() if gravity_dir == 1 else is_on_ceiling()

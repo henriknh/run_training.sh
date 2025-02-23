@@ -138,6 +138,8 @@ animation = &"slide"
 flip_v = true
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+position = Vector2(0, -24)
+scale = Vector2(1, -1)
 process_material = SubResource("ParticleProcessMaterial_sre4h")
 texture = SubResource("AtlasTexture_mf48g")
 lifetime = 0.3
