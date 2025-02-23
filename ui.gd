@@ -50,7 +50,7 @@ func _ready() -> void:
 
 func _generate_loading_lines(address):
 	loading_lines = [
-		[loading_prompt1, true,  0.550, OS.has_environment("USERNAME") if OS.has_environment("USERNAME") else "user" + "@workstation ~"],
+		[loading_prompt1, true,  0.550, "user@workstation ~"],
 		[loading_prompt2, false,  0.1, "ssh root@" + address],
 		[loading_prompt3, true, 1.100, "Connecting..."],
 		[loading_prompt3, true, 0.1, "Welcome to the Training Terminal."],
